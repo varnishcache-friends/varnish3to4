@@ -17,9 +17,12 @@ req.grace | -
 {beresp,obj,resp}.response | {beresp,obj,resp}.reason
 remove | unset
 
-Planned but not implemented yet:
+Not implemented yet:
 
 V3 | V4
 :-- | :--
 - | vcl 4.0
  | import directors<br/>new xx = directors.yy();<br/>xx.add_backend(ss);<br/>set req.backend_hint = xx.backend()
+return (hit_for_pass) | set beresp.uncacheable = true;<br/>return (deliver);
+return (lookup) in vcl_recv | return (hash)
+client.port | std.port(client.ip)
