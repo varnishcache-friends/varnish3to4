@@ -28,18 +28,21 @@ import argparse
 import re
 
 v3tov4 = (
-    (r'sub\s+(vcl_fetch)\s*{', 'vcl_backend_response'),
-    (r'sub\s+(vcl_error)\s*{', 'vcl_synth'),
-    (r'(error\s+(?P<c>\d+)\s+(?P<r>"\w+"))', 'return (synth(%(c)s, %(r)s))'),
-    (r'(error\s+(?P<c>\d+))', 'return (synth(%(c)s))'),
-    (r'(req\.backend)\s*=', 'req.backend_hint'),
-    (r'(req\.(?P<b>\w+)\.healthy)', 'std.healthy(%(b)s)'),
-    (r'((?:set|unset)\s+req\.grace[^;]*;)', ''),
-    (r'(?:bereq|req)\.(request)', 'method'),
-    (r'(?:beresp|obj|resp)\.(response)', 'reason'),
-    (r'(remove)\s+\w+', 'unset'),
-    # directors
-    # vcl 4.0 marker
+    ('sub\s+(vcl_fetch)\s*{', 'vcl_backend_response'),
+    ('sub\s+(vcl_error)\s*{', 'vcl_synth'),
+    ('(error\s+(?P<c>\d+)\s+(?P<r>"\w+"))', 'return (synth(%(c)s, %(r)s))'),
+    ('(error\s+(?P<c>\d+))', 'return (synth(%(c)s))'),
+    ('(req\.backend)\s*=', 'req.backend_hint'),
+    ('(req\.(?P<b>\w+)\.healthy)', 'std.healthy(%(b)s)'),
+    ('((?:set|unset)\s+req\.grace[^;]*;)', ''),
+    ('((?P<v>bereq|req)\.(request))', '%(v)s.method'),
+    ('((?P<v>beresp|obj|resp)\.(response))', '%(v)s.reason'),
+    ('(remove)\s+\w+', 'unset'),
+    ('((?P<s>\s*)return(?:\s*|\(?)hit_for_pass\)?[^;])',
+        '%(s)s# set beresp.ttl = 120s;'
+        '%(s)sset beresp.uncacheable = true;'
+        '%(s)sreturn (deliver)'),
+    ('(client\.port)', 'std.port(client.ip)'),
 )
 
 def main():
