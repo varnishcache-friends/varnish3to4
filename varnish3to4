@@ -2,10 +2,10 @@
 #
 # Copyright (c) 2014, Federico G. Schwindt <fgsch@lodoss.net>
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
+#
 # 1. Redistributions of source code must retain the above copyright notice, this
 #    list of conditions and the following disclaimer.
 #
@@ -56,7 +56,7 @@ def main():
     parser.add_argument('config', type=argparse.FileType('r'),
                         help='Varnish 3 VCL file')
     parser.add_argument('-o', '--output', type=argparse.FileType('w'),
-                        default='-') 
+                        default='-')
     args = parser.parse_args()
 
     config = fixup(args.config.read())
