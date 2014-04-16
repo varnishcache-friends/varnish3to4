@@ -42,13 +42,12 @@ v3tov4 = (
         '%(s)s# set beresp.ttl = 120s;'
         '%(s)sset beresp.uncacheable = true;'
         '%(s)sreturn (deliver)'),
-    ('(client\.port)', 'std.port(client.ip)'),
+    ('((?P<v>client|server)\.port)', 'std.port(%(v)s.ip)'),
 )
 
 def fixup(config):
     for v3, v4 in v3tov4:
-        m = re.search(v3, config)
-        if m:
+        for m in re.finditer(v3, config):
             config = config.replace(m.group(1), v4 % m.groupdict())
     return config
 
