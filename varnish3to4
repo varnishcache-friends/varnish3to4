@@ -60,6 +60,7 @@ def main():
     args = parser.parse_args()
 
     config = fixup(args.config.read())
+    args.output.write("vcl 4.0;\n\n")
     args.output.write(config)
 
 if __name__ == '__main__':
