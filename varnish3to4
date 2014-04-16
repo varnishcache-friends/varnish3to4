@@ -29,17 +29,18 @@ import re
 
 def fixup(config):
     v3v4 = (
-        ('sub\s+(vcl_fetch)\s*{', 'vcl_backend_response'),
-        ('sub\s+(vcl_error)\s*{', 'vcl_synth'),
+        ('(vcl_fetch)', 'vcl_backend_response'),
+        ('(vcl_error)', 'vcl_synth'),
         ('(error\s+(\d+)\s+("\w+"))',
             'return (synth(\g<2>, \g<3>))'),
         ('(error\s+(\d+))', 'return (synth(\g<2>))'),
-        ('(req\.backend)\s*=', 'req.backend_hint'),
+        ('(req\.backend)', 'req.backend_hint'),
         ('(req\.(\w+)\.healthy)', 'std.healthy(\g<2>)'),
         ('((?:set|unset)\s+req\.grace[^;]*;)', ''),
         ('((bereq|req)\.(request))', '\g<2>.method'),
         ('((beresp|obj|resp)\.(response))', '\g<2>.reason'),
-        ('(remove(\s+)(bereq|beresp|req|resp|obj))\.', 'unset\g<2>\g<3>'),
+        ('(remove\s+(bereq|beresp|req|resp|obj))\.',
+            'unset \g<2>'),
         ('((\s*)return\s*\(?hit_for_pass\)?[^;])',
             '\g<2># set beresp.ttl = 120s;'
             '\g<2>set beresp.uncacheable = true;'
