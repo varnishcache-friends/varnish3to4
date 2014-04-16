@@ -37,7 +37,8 @@ v3tov4 = (
     ('((?:set|unset)\s+req\.grace[^;]*;)', ''),
     ('((?P<v>bereq|req)\.(request))', '%(v)s.method'),
     ('((?P<v>beresp|obj|resp)\.(response))', '%(v)s.reason'),
-    ('(remove)\s+\w+', 'unset'),
+    ('(remove(?P<s>\s+)(?P<v>bereq|beresp|req|resp|obj))\.',
+        'unset%(s)s%(v)s'),
     ('((?P<s>\s*)return(?:\s*|\(?)hit_for_pass\)?[^;])',
         '%(s)s# set beresp.ttl = 120s;'
         '%(s)sset beresp.uncacheable = true;'
