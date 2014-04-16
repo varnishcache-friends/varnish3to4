@@ -27,29 +27,40 @@
 import argparse
 import re
 
-v3tov4 = (
-    ('sub\s+(vcl_fetch)\s*{', 'vcl_backend_response'),
-    ('sub\s+(vcl_error)\s*{', 'vcl_synth'),
-    ('(error\s+(?P<c>\d+)\s+(?P<r>"\w+"))', 'return (synth(%(c)s, %(r)s))'),
-    ('(error\s+(?P<c>\d+))', 'return (synth(%(c)s))'),
-    ('(req\.backend)\s*=', 'req.backend_hint'),
-    ('(req\.(?P<b>\w+)\.healthy)', 'std.healthy(%(b)s)'),
-    ('((?:set|unset)\s+req\.grace[^;]*;)', ''),
-    ('((?P<v>bereq|req)\.(request))', '%(v)s.method'),
-    ('((?P<v>beresp|obj|resp)\.(response))', '%(v)s.reason'),
-    ('(remove(?P<s>\s+)(?P<v>bereq|beresp|req|resp|obj))\.',
-        'unset%(s)s%(v)s'),
-    ('((?P<s>\s*)return(?:\s*|\(?)hit_for_pass\)?[^;])',
-        '%(s)s# set beresp.ttl = 120s;'
-        '%(s)sset beresp.uncacheable = true;'
-        '%(s)sreturn (deliver)'),
-    ('((?P<v>client|server)\.port)', 'std.port(%(v)s.ip)'),
-)
-
 def fixup(config):
-    for v3, v4 in v3tov4:
-        for m in re.finditer(v3, config):
-            config = config.replace(m.group(1), v4 % m.groupdict())
+    v3v4 = (
+        ('sub\s+(vcl_fetch)\s*{', 'vcl_backend_response'),
+        ('sub\s+(vcl_error)\s*{', 'vcl_synth'),
+        ('(error\s+(\d+)\s+("\w+"))',
+            'return (synth(\g<2>, \g<3>))'),
+        ('(error\s+(\d+))', 'return (synth(\g<2>))'),
+        ('(req\.backend)\s*=', 'req.backend_hint'),
+        ('(req\.(\w+)\.healthy)', 'std.healthy(\g<2>)'),
+        ('((?:set|unset)\s+req\.grace[^;]*;)', ''),
+        ('((bereq|req)\.(request))', '\g<2>.method'),
+        ('((beresp|obj|resp)\.(response))', '\g<2>.reason'),
+        ('(remove(\s+)(bereq|beresp|req|resp|obj))\.', 'unset\g<2>\g<3>'),
+        ('((\s*)return\s*\(?hit_for_pass\)?[^;])',
+            '\g<2># set beresp.ttl = 120s;'
+            '\g<2>set beresp.uncacheable = true;'
+            '\g<2>return (deliver)'),
+        ('((client|server)\.port)', 'std.port(\g<2>.ip)'),
+    )
+    for v3, v4 in v3v4:
+        config = re.sub(v3, v4, config)
+    return config
+
+def fixup_multi(config):
+    v3v4 = (
+        ('sub\s+vcl_recv\s(.*?)^sub',
+            '(return\s*\(?lookup\)?[^;])', 'return (hash)'),
+        ('sub\s+vcl_backend_response\s(.*?)^sub',
+            '((?<!be)req\.(\w+))', 'bereq.\g<2>'),
+    )
+    for s, v3, v4 in v3v4:
+        for m in re.finditer(s, config, re.S | re.M):
+            config = config.replace(m.group(),
+                                    re.sub(v3, v4, m.group(), re.S | re.M))
     return config
 
 def main():
@@ -61,6 +72,7 @@ def main():
     args = parser.parse_args()
 
     config = fixup(args.config.read())
+    config = fixup_multi(config)
     args.output.write(config)
 
 if __name__ == '__main__':
