@@ -39,7 +39,7 @@ def fixup(config):
         ('((?:set|unset)\s+req\.grace[^;]*;)', ''),
         ('((bereq|req)\.(request))', '\g<2>.method'),
         ('((beresp|obj|resp)\.(response))', '\g<2>.reason'),
-        ('(remove\s+(bereq|beresp|req|resp|obj))\.',
+        ('(remove\s+((?:bereq|beresp|req|resp|obj).))',
             'unset \g<2>'),
         ('((\s*)return\s*\(?hit_for_pass\)?[^;])',
             '\g<2># set beresp.ttl = 120s;'
@@ -53,9 +53,9 @@ def fixup(config):
 
 def fixup_multi(config):
     v3v4 = (
-        ('sub\s+vcl_recv\s(.*?)^sub',
+        ('sub\s+vcl_recv\s(.*?)(sub|^$)',
             '(return\s*\(?lookup\)?[^;])', 'return (hash)'),
-        ('sub\s+vcl_backend_response\s(.*?)^sub',
+        ('sub\s+vcl_backend_response\s(.*?)(sub|^$)',
             '((?<!be)req\.(\w+))', 'bereq.\g<2>'),
     )
     for s, v3, v4 in v3v4:
