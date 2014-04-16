@@ -17,7 +17,7 @@ req.grace | -
 {beresp,obj,resp}.response | {beresp,obj,resp}.reason
 remove | unset
 return (hit_for_pass) | set beresp.uncacheable = true;<br/>return (deliver);
-client.port | std.port(client.ip)
+{client,server}.port | std.port({client,server}.ip)
 
 Not implemented yet:
 
