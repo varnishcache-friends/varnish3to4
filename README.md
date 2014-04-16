@@ -18,6 +18,8 @@ req.grace | -
 remove | unset
 return (hit_for_pass) | set beresp.uncacheable = true;<br/>return (deliver);
 {client,server}.port | std.port({client,server}.ip)
+return (lookup) in vcl_recv | return (hash)
+req.* in vcl_backend_response | bereq.*
 
 Not implemented yet:
 
@@ -25,5 +27,3 @@ V3 | V4
 :-- | :--
 - | vcl 4.0
  | import directors<br/>new xx = directors.yy();<br/>xx.add_backend(ss);<br/>set req.backend_hint = xx.backend()
-return (lookup) in vcl_recv | return (hash)
-req.* in vcl_backend_response | bereq.*
