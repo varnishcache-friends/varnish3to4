@@ -66,6 +66,8 @@ def fixup_multi(config):
             '((?<!be)req\.(\w+))', 'bereq.\g<2>'),
         ('^\s*(synthetic\s+((?:{|").*?(?:"|})));', '(\w+)\s+(.*)',
             '\g<1>(\g<2>)'),
+        ('sub\s+vcl_synth\s(((?!sub ).)*$)',
+            '(obj\.http)', 'resp.http'),
         ('(set\s+[^;]*;)', '^(.*)$',
             lambda m:[m.group(), '']['last_use' in m.group()]),
     )
