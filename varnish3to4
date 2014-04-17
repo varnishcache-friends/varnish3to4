@@ -59,13 +59,13 @@ def fixup(config):
 def fixup_multi(config):
     v3v4 = (
         ('sub\s+vcl_recv\s(((?!sub ).)*$)',
-            '(return\s*\(?lookup\)?[^;])', 'return (hash)'),
+            'return\s*\(?lookup\)?[^;]', 'return (hash)'),
         ('sub\s+vcl_hash\s(((?!sub ).)*$)',
             'return\s*\(?hash\)?[^;]', 'return (lookup)'),
         ('sub\s+vcl_backend_response\s(((?!sub ).)*$)',
             '((?<!be)req\.(\w+))', 'bereq.\g<2>'),
-        ('^\s*(synthetic\s+((?:{|").*?(?:"|})));', '(\w+)\s+(.*)',
-            '\g<1>(\g<2>)'),
+        ('^\s*synthetic(\s+(?:{|").*?(?:"|}));', '\s+(.*)',
+            '(\g<1>)'),
         ('sub\s+vcl_synth\s(((?!sub ).)*$)',
             'obj\.http', 'resp.http'),
         ('(set\s+[^;]*;)', '^(.*)$',
