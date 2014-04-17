@@ -1,7 +1,7 @@
 varnish3to4
 ===========
 
-Script to assist migrating a VCL file from Varnish 3 to 4.
+A script to assist migrating a VCL file from Varnish 3 to 4.
 
 Currently understands:
 
@@ -23,11 +23,13 @@ return (lookup) in vcl_recv | return (hash)
 return (hash) in vcl_hash | return (lookup)
 synthetic .. | synthetic(..)
 
-Not implemented yet:
+Might be implemented:
 
 V3 | V4
 :-- | :--
  | import directors<br/>new xx = directors.yy();<br/>xx.add_backend(ss);<br/>set req.backend_hint = xx.backend()
+obj.last_use |
+obj.hits - writing to |
 
 Won't be implemented:
 
