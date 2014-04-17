@@ -7,7 +7,6 @@ Currently understands:
 
 V3 | V4
 :-- | :--
-- | vcl 4.0
 vcl_fetch | vcl_backend_response
 vcl_error | vcl_synth
 error code response | return (vcl_synth(code, response))
@@ -28,3 +27,9 @@ Not implemented yet:
 V3 | V4
 :-- | :--
  | import directors<br/>new xx = directors.yy();<br/>xx.add_backend(ss);<br/>set req.backend_hint = xx.backend()
+
+Won't be implemented:
+
+V3 | V4
+:-- | :--
+- | vcl 4.0

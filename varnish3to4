@@ -80,7 +80,6 @@ def main():
 
     config = fixup(args.config.read())
     config = fixup_multi(config)
-    args.output.write("vcl 4.0;\n\n")
     args.output.write(config)
 
 if __name__ == '__main__':
