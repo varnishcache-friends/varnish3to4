@@ -23,13 +23,13 @@ return (lookup) in vcl_recv | return (hash)
 return (hash) in vcl_hash | return (lookup)
 synthetic .. | synthetic(..)
 obj.last_use |
+obj.hits - writing to |
 
 Might be implemented:
 
 V3 | V4
 :-- | :--
  | import directors<br/>new xx = directors.yy();<br/>xx.add_backend(ss);<br/>set req.backend_hint = xx.backend()
-obj.hits - writing to |
 obj.* in synthetic | resp.*
 purge | return (purge)
 
