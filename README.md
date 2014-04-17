@@ -30,6 +30,7 @@ V3 | V4
  | import directors<br/>new xx = directors.yy();<br/>xx.add_backend(ss);<br/>set req.backend_hint = xx.backend()
 obj.last_use |
 obj.hits - writing to |
+purge | return (purge)
 
 Won't be implemented:
 
