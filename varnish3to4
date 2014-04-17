@@ -64,7 +64,9 @@ def fixup_multi(config):
             '(return\s*\(?hash\)?[^;])', 'return (lookup)'),
         ('sub\s+vcl_backend_response\s(((?!sub ).)*$)',
             '((?<!be)req\.(\w+))', 'bereq.\g<2>'),
-        ('^\s*(synthetic\s+(.*?));', '(\w+)\s+([^;]*)',
+        ('^\s*(synthetic\s+(".*?"));', '(\w+)\s+(.*)',
+            '\g<1>(\g<2>)'),
+        ('^\s*(synthetic\s+({.*?}));', '(\w+)\s+(.*)',
             '\g<1>(\g<2>)'),
         ('(set\s+[^;]*;)', '^(.*)$',
             lambda m:[m.group(), '']['last_use' in m.group()]),
@@ -72,7 +74,7 @@ def fixup_multi(config):
     for s, v3, v4 in v3v4:
         for m in re.finditer(s, config, re.S | re.M):
             config = config.replace(m.group(1),
-                                    re.sub(v3, v4, m.group(1), re.S | re.M))
+                                    re.sub(v3, v4, m.group(1), 0, re.S | re.M))
     return config
 
 def main():
