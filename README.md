@@ -20,6 +20,7 @@ req.* in vcl_backend_response | bereq.*
 {client,server}.port | std.port({client,server}.ip)
 return (hit_for_pass) | set beresp.uncacheable = true;<br/>return (deliver);
 return (lookup) in vcl_recv | return (hash)
+return (hash) in vcl_hash | return (lookup)
 synthetic .. | synthetic(..)
 
 Not implemented yet:
