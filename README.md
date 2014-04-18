@@ -24,14 +24,15 @@ return (hash) in vcl_hash | return (lookup)
 synthetic .. | synthetic(..)
 obj.last_use | -
 obj.hits - writing to | -
-obj.http.* in vcl_synth | resp.http.*
+obj.* in vcl_synth | resp.*
+purge | return (purge)
 
 Might be implemented:
 
 V3 | V4
 :-- | :--
 - | import directors<br/>new xx = directors.yy();<br/>xx.add_backend(ss);<br/>set req.backend_hint = xx.backend()
-purge | return (purge)
+obj.hits in vcl_synth | -
 
 Won't be implemented:
 

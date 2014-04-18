@@ -66,15 +66,15 @@ def fixup_multi(config):
             '((?<!be)req\.(\w+))', 'bereq.\g<2>'),
         ('^\s*synthetic(\s+(?:{|").*?(?:"|}));', '\s+(.*)',
             '(\g<1>)'),
-        ('sub\s+vcl_synth\s(((?!sub ).)*$)',
-            'obj\.http', 'resp.http'),
+        ('sub\s+vcl_synth\s(((?!sub ).)*$)', 'obj\.', 'resp.'),
         ('(set\s+[^;]*;)', '^(.*)$',
             lambda m:[m.group(), '']['last_use' in m.group()]),
+        ('{(\s*purge\s*;(((?!}\n).)*))', 'purge', 'return (purge)'),
     )
     for s, v3, v4 in v3v4:
         for m in re.finditer(s, config, re.S | re.M):
-            config = config.replace(m.group(1),
-                                    re.sub(v3, v4, m.group(1), 0, re.S | re.M))
+            config = config.replace(m.group(1), re.sub(v3, v4, m.group(1),
+                                                       0, re.S | re.M))
     return config
 
 def main():
