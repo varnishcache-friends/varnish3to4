@@ -32,7 +32,7 @@ Might be implemented:
 V3 | V4
 :-- | :--
 - | import directors<br/>new xx = directors.yy();<br/>xx.add_backend(ss);<br/>set req.backend_hint = xx.backend()
-obj.hits in vcl_synth | -
+obj.hits reading in vcl_synth | -
 
 Won't be implemented:
 
