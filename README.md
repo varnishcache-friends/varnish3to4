@@ -10,7 +10,6 @@ V3 | V4
 vcl_fetch | vcl_backend_response
 vcl_error | vcl_synth
 error code response | return (vcl_synth(code, response))
-purge | return (purge)
 remove | unset
 {bereq,req}.request | {bereq,req}.method
 {beresp,obj,resp}.response | {beresp,obj,resp}.reason
@@ -23,15 +22,17 @@ return (hit_for_pass) | set beresp.uncacheable = true;<br/>return (deliver);
 return (lookup) in vcl_recv | return (hash)
 return (hash) in vcl_hash | return (lookup)
 synthetic .. | synthetic(..)
-obj.* in vcl_synth | resp.*
-obj.hits - writing to | -
 obj.last_use | -
+obj.hits - writing to | -
+obj.* in vcl_synth | resp.*
+purge | return (purge)
 
 Might be implemented:
 
 V3 | V4
 :-- | :--
 - | import directors<br/>new xx = directors.yy();<br/>xx.add_backend(ss);<br/>set req.backend_hint = xx.backend()
+obj.hits reading in vcl_synth | -
 
 Won't be implemented:
 
