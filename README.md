@@ -22,6 +22,7 @@ req.* in vcl_backend_response | bereq.*
 return (hit_for_pass) | set beresp.uncacheable = true;<br/>return (deliver);
 return (lookup) in vcl_recv | return (hash)
 return (hash) in vcl_hash | return (lookup)
+return (pass) in vcl_pass | return (fetch)
 synthetic .. | synthetic(..)
 obj.* in vcl_synth | resp.*
 obj.hits - writing to | -

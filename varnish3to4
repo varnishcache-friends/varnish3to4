@@ -67,6 +67,8 @@ def fixup_multi(config):
             'return\s*\(?lookup\)?[^;]', 'return (hash)'),
         ('sub\s+vcl_hash\s(((?!sub ).)*$)',
             'return\s*\(?hash\)?[^;]', 'return (lookup)'),
+        ('sub\s+vcl_pass\s(((?!sub ).)*$)',
+            'return\s*\(?pass\)?[^;]', 'return (fetch)'),
         ('sub\s+vcl_backend_response\s(((?!sub ).)*$)',
             '((?<!be)req\.(\w+))', 'bereq.\g<2>'),
         ('sub\s+vcl_synth\s(((?!sub ).)*$)', '(set\s+[^;]*;)',
