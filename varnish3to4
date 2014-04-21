@@ -46,7 +46,6 @@ def fixup(config):
         ('((beresp|obj|resp)\.(response))', '\g<2>.reason'),
         ('(remove\s+((?:bereq|beresp|req|resp|obj).))',
             'unset \g<2>'),
-        ('(set\s+obj.hits[^;]*;)', ''),
         ('((\s*)return\s*\(?hit_for_pass\)?[^;])',
             '\g<2># set beresp.ttl = 120s;'
             '\g<2>set beresp.uncacheable = true;'
@@ -58,6 +57,11 @@ def fixup(config):
     return config
 
 def fixup_multi(config):
+    def repl(v):
+        def func(m):
+            s = m.group()
+            return '' if v in s else s
+        return func
     v3v4 = (
         ('sub\s+vcl_recv\s(((?!sub ).)*$)',
             'return\s*\(?lookup\)?[^;]', 'return (hash)'),
@@ -65,11 +69,12 @@ def fixup_multi(config):
             'return\s*\(?hash\)?[^;]', 'return (lookup)'),
         ('sub\s+vcl_backend_response\s(((?!sub ).)*$)',
             '((?<!be)req\.(\w+))', 'bereq.\g<2>'),
+        ('sub\s+vcl_synth\s(((?!sub ).)*$)', '(set\s+[^;]*;)',
+            repl('obj.hits')),
+        ('sub\s+vcl_synth\s(((?!sub ).)*$)', 'obj\.', 'resp.'),
         ('^\s*synthetic(\s+(?:{|").*?(?:"|}));', '\s+(.*)',
             '(\g<1>)'),
-        ('sub\s+vcl_synth\s(((?!sub ).)*$)', 'obj\.', 'resp.'),
-        ('(set\s+[^;]*;)', '^(.*)$',
-            lambda m:[m.group(), '']['last_use' in m.group()]),
+        ('(set\s+[^;]*;)', '^(.*)$', repl('last_use')),
         ('return \(purge\);\s+(return\s+[^;]*)', '^(.*)$',
             '# \g<1>'),
     )
