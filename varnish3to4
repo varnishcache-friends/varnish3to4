@@ -30,7 +30,6 @@ import re
 def fixup(config):
     v3v4 = (
         ('(vcl_fetch)', 'vcl_backend_response'),
-        ('(vcl_error)', 'vcl_synth'),
         ('(\s*)purge;', '\g<1>return (purge);'),
         ('(error\s+(\d+)\s+("[^"]*"))',
             'return (synth(\g<2>, \g<3>))'),
@@ -44,13 +43,14 @@ def fixup(config):
            '\g<1># \g<2>'),
         ('((bereq|req)\.(request))', '\g<2>.method'),
         ('((beresp|obj|resp)\.(response))', '\g<2>.reason'),
-        ('(remove\s+((?:bereq|beresp|req|resp|obj).))',
+        ('(remove\s+((bereq|beresp|req|resp|obj)\.))',
             'unset \g<2>'),
         ('((\s*)return\s*\(?hit_for_pass\)?[^;])',
             '\g<2># set beresp.ttl = 120s;'
             '\g<2>set beresp.uncacheable = true;'
             '\g<2>return (deliver)'),
         ('((client|server)\.port)', 'std.port(\g<2>.ip)'),
+        ('(set\s+obj\.[^;]*;)', ''),
     )
     for v3, v4 in v3v4:
         config = re.sub(v3, v4, config)
@@ -63,22 +63,29 @@ def fixup_multi(config):
             return '' if v in s else s
         return func
     v3v4 = (
-        ('sub\s+vcl_recv\s(((?!sub ).)*$)',
+        ('(sub\s+vcl_recv\s(((?!sub ).)*$))',
             'return\s*\(?lookup\)?[^;]', 'return (hash)'),
-        ('sub\s+vcl_hash\s(((?!sub ).)*$)',
+        ('(sub\s+vcl_hash\s(((?!sub ).)*$))',
             'return\s*\(?hash\)?[^;]', 'return (lookup)'),
-        ('sub\s+vcl_pass\s(((?!sub ).)*$)',
+        ('(sub\s+vcl_pass\s(((?!sub ).)*$))',
             'return\s*\(?pass\)?[^;]', 'return (fetch)'),
-        ('sub\s+vcl_backend_response\s(((?!sub ).)*$)',
-            '((?<!be)req\.(\w+))', 'bereq.\g<2>'),
-        ('sub\s+vcl_synth\s(((?!sub ).)*$)', '(set\s+[^;]*;)',
-            repl('obj.hits')),
-        ('sub\s+vcl_synth\s(((?!sub ).)*$)', 'obj\.', 'resp.'),
-        ('^\s*synthetic(\s+(?:{|").*?(?:"|}));', '\s+(.*)',
-            '(\g<1>)'),
-        ('(set\s+[^;]*;)', '^(.*)$', repl('last_use')),
         ('return \(purge\);\s+(return\s+[^;]*)', '^(.*)$',
             '# \g<1>'),
+        ('^\s*synthetic(\s+({|").*?("|}));', '\s+(.*)',
+            '(\g<1>)'),
+        ('(sub\s+(vcl_error|vcl_backend_response)\s(((?!sub ).)*$))',
+            '(set\s+[^;]*;)', repl('obj.')),
+        ('(sub\s+vcl_error\s(((?!sub ).)*$))',
+            'obj\.', 'resp.'),
+        ('(sub\s+vcl_error\s(((?!sub ).)*$))',
+            'sub\s+vcl_error\s(.*)$',
+            'sub vcl_backend_error \g<1>\n'
+            'sub vcl_synth \g<1>'),
+        ('(sub\s+vcl_backend_error\s(((?!sub ).)*$))',
+            '((?<!be)resp\.(\w+))', 'beresp.\g<2>'),
+        ('(sub\s+vcl_backend_response\s(((?!sub ).)*$))',
+            '((?<!be)req\.(\w+))', 'bereq.\g<2>'),
+        ('(set\s+[^;]*;)', '^(.*)$', repl('obj.last_use')),
     )
     for s, v3, v4 in v3v4:
         for m in re.finditer(s, config, re.S | re.M):
