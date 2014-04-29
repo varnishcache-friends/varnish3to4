@@ -50,7 +50,7 @@ def fixup(config):
             '\g<2>set beresp.uncacheable = true;'
             '\g<2>return (deliver)'),
         ('((client|server)\.port)', 'std.port(\g<2>.ip)'),
-        ('(set\s+obj\.[^;]*;)', ''),
+        ('(set\s+obj\.hits[^;]*;)', ''),
     )
     for v3, v4 in v3v4:
         config = re.sub(v3, v4, config)
@@ -63,6 +63,7 @@ def fixup_multi(config):
             return '' if v in s else s
         return func
     v3v4 = (
+        ('(set\s+[^;]*;)', '^(.*)$', repl('obj.last_use')),
         ('(sub\s+vcl_recv\s(((?!sub ).)*$))',
             'return\s*\(?lookup\)?[^;]', 'return (hash)'),
         ('(sub\s+vcl_hash\s(((?!sub ).)*$))',
@@ -71,21 +72,26 @@ def fixup_multi(config):
             'return\s*\(?pass\)?[^;]', 'return (fetch)'),
         ('return \(purge\);\s+(return\s+[^;]*)', '^(.*)$',
             '# \g<1>'),
-        ('^\s*synthetic(\s+({|").*?("|}));', '\s+(.*)',
+        ('^\s*(synthetic\s+[{"].*?["}];)', '\s+(.*);',
+            '(\g<1>);'),
+        ('^\s*(synthetic\s+[^;]*);', '\s+(.*)',
             '(\g<1>)'),
-        ('(sub\s+(vcl_error|vcl_backend_response)\s(((?!sub ).)*$))',
-            '(set\s+[^;]*;)', repl('obj.')),
         ('(sub\s+vcl_error\s(((?!sub ).)*$))',
             'obj\.', 'resp.'),
         ('(sub\s+vcl_error\s(((?!sub ).)*$))',
             'sub\s+vcl_error\s(.*)$',
             'sub vcl_backend_error \g<1>\n'
             'sub vcl_synth \g<1>'),
+        ('(sub\s+vcl_backend_(error|response)\s(((?!sub ).)*$))',
+            '((?<!be)req\.(\w+))', 'bereq.\g<2>'),
         ('(sub\s+vcl_backend_error\s(((?!sub ).)*$))',
             '((?<!be)resp\.(\w+))', 'beresp.\g<2>'),
-        ('(sub\s+vcl_backend_response\s(((?!sub ).)*$))',
-            '((?<!be)req\.(\w+))', 'bereq.\g<2>'),
-        ('(set\s+[^;]*;)', '^(.*)$', repl('obj.last_use')),
+        ('(sub\s+vcl_backend_error\s(((?!sub ).)*$))',
+            '(bereq\.restarts)', 'bereq.retries'),
+        ('(sub\s+vcl_backend_error\s(((?!sub ).)*$))',
+            '(bereq\.backend_hint)', 'bereq.backend'),
+        ('(sub\s+vcl_backend_error\s(((?!sub ).)*$))',
+            'return\s*\(?restart\)?[^;]', 'return (retry)'),
     )
     for s, v3, v4 in v3v4:
         for m in re.finditer(s, config, re.S | re.M):
