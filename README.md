@@ -9,7 +9,7 @@ V3 | V4
 :-- | :--
 vcl_fetch | vcl_backend_response
 vcl_error | vcl_backend_error and vcl_synth
-error code response | return (vcl_synth(code, response))
+error code response | return (synth(code, response))
 purge | return (purge)
 remove | unset
 {bereq,req}.request | {bereq,req}.method
