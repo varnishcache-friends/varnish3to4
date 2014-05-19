@@ -3,14 +3,14 @@ varnish3to4
 
 Unofficial script to assist migrating a VCL file from Varnish 3 to 4.
 
-Suggested usage
-~~~~~~~~~~~~~~~
+### Suggested usage
 
+```
  $ varnish3to4 -o <filename>.v4 <filename>
  $ diff -u <filename> <filename>.v4
+```
 
-Currently understands
-~~~~~~~~~~~~~~~~~~~~~
+### Currently understands
 
 V3 | V4
 :-- | :--
@@ -37,8 +37,7 @@ obj.* in vcl_synth | resp.*
 obj.hits - writing to | -
 obj.last_use | -
 
-Might be implemented
-~~~~~~~~~~~~~~~~~~~~
+### Might be implemented
 
 V3 | V4
 :-- | :--
@@ -46,8 +45,7 @@ V3 | V4
 
 And any other change missing from these tables.
 
-Won't be implemented
-~~~~~~~~~~~~~~~~~~~~
+### Won't be implemented
 
 V3 | V4
 :-- | :--
