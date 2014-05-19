@@ -1,9 +1,16 @@
 varnish3to4
 ===========
 
-A script to assist migrating a VCL file from Varnish 3 to 4.
+Unofficial script to assist migrating a VCL file from Varnish 3 to 4.
 
-Currently understands:
+Suggested usage
+~~~~~~~~~~~~~~~
+
+ $ varnish3to4 -o <filename>.v4 <filename>
+ $ diff -u <filename> <filename>.v4
+
+Currently understands
+~~~~~~~~~~~~~~~~~~~~~
 
 V3 | V4
 :-- | :--
@@ -14,8 +21,9 @@ purge | return (purge)
 remove | unset
 {bereq,req}.request | {bereq,req}.method
 {beresp,obj,resp}.response | {beresp,obj,resp}.reason
+{bereq,req}.backend.healthy | std.healthy({bereq.backend,req.backend_hint})
+beresp.storage | beresp.storage_hint
 req.backend | req.backend_hint
-req.backend.healthy | std.healthy(backend)
 req.grace | -
 req.* in vcl_backend_response | bereq.*
 {client,server}.port | std.port({client,server}.ip)
@@ -23,18 +31,23 @@ return (hit_for_pass) | set beresp.uncacheable = true;<br/>return (deliver);
 return (lookup) in vcl_recv | return (hash)
 return (hash) in vcl_hash | return (lookup)
 return (pass) in vcl_pass | return (fetch)
+return (restart) in vcl_fetch | return (retry)
 synthetic .. | synthetic(..)
 obj.* in vcl_synth | resp.*
 obj.hits - writing to | -
 obj.last_use | -
 
-Might be implemented:
+Might be implemented
+~~~~~~~~~~~~~~~~~~~~
 
 V3 | V4
 :-- | :--
 - | import directors<br/>new xx = directors.yy();<br/>xx.add_backend(ss);<br/>set req.backend_hint = xx.backend()
 
-Won't be implemented:
+And any other change missing from these tables.
+
+Won't be implemented
+~~~~~~~~~~~~~~~~~~~~
 
 V3 | V4
 :-- | :--
