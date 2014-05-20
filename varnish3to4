@@ -65,7 +65,7 @@ def fixup_multi(config):
             return '' if v in s else s
         return func
     v3v4 = (
-        ('(set\s+[^;]*;)', '^(.*)$', repl('obj.last_use')),
+        ('(set\s+[^;]*;)', '^(.*)$', repl('obj.lastuse')),
         ('(sub\s+vcl_recv\s(((?!sub ).)*$))',
             'return\s*\(?lookup\)?[^;]', 'return (hash)'),
         ('(sub\s+vcl_hash\s(((?!sub ).)*$))',

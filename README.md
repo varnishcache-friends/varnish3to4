@@ -35,7 +35,7 @@ return (restart) in vcl_fetch | return (retry)
 synthetic .. | synthetic(..)
 obj.* in vcl_synth | resp.*
 obj.hits - writing to | -
-obj.last_use | -
+obj.lastuse | -
 
 ### Might be implemented
 
