@@ -32,7 +32,11 @@ import re
 def fixup(config):
     v3v4 = (
         ('(vcl_fetch)', 'vcl_backend_response'),
-        ('(\s*)purge;', '\g<1>return (purge);'),
+        ('(\s*)(purge\s*;)',
+           '\g<1>#'
+           '\g<1># This is now handled in vcl_recv.'
+           '\g<1>#'
+           '\g<1># \g<2>'),
         ('(error\s+(\d+)\s+("[^"]*"))',
             'return (synth(\g<2>, \g<3>))'),
         ('(error\s+(\d+))', 'return (synth(\g<2>))'),
@@ -72,8 +76,6 @@ def fixup_multi(config):
             'return\s*\(?hash\)?[^;]', 'return (lookup)'),
         ('(sub\s+vcl_pass\s(((?!sub ).)*$))',
             'return\s*\(?pass\)?[^;]', 'return (fetch)'),
-        ('return \(purge\);\s+(return\s+[^;]*)', '^(.*)$',
-            '# \g<1>'),
         ('^\s*(synthetic\s+[{"].*?["}];)', '(?ms)\s+(.*);',
             '(\g<1>);'),
         ('^\s*(synthetic\s+[^;]*);', '\s+(.*)',

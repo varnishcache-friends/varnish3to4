@@ -17,7 +17,7 @@ V3 | V4
 vcl_fetch | vcl_backend_response
 vcl_error | vcl_backend_error and vcl_synth
 error code response | return (synth(code, response))
-purge | return (purge)
+purge | -
 remove | unset
 {bereq,req}.request | {bereq,req}.method
 {beresp,obj,resp}.response | {beresp,obj,resp}.reason
@@ -41,12 +41,8 @@ obj.lastuse | -
 
 V3 | V4
 :-- | :--
+- | vcl 4.0
 - | import directors<br/>new xx = directors.yy();<br/>xx.add_backend(ss);<br/>set req.backend_hint = xx.backend()
 
-And any other change missing from these tables.
-
-### Won't be implemented
-
-V3 | V4
-:-- | :--
-- | vcl 4.0
+Add imports resulting from changes in V4, purge handling and any other
+changes missing from this document.
