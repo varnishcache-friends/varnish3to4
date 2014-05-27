@@ -94,7 +94,7 @@ def fixup_multi(config):
             '(obj\.(\w+))', 'beresp.\g<2>'),
         ('(sub\s+vcl_backend_error\s(((?!sub ).)*$))',
             '(bereq\.restarts)', 'bereq.retries'),
-        ('(sub\s+vcl_(recv|miss|hit)\s(((?!sub ).)*$))',
+        ('(sub\s+vcl_(hit|miss|pass|pipe|recv|synth)\s(((?!sub ).)*$))',
             '(req\.backend(?!_))', 'req.backend_hint'),
         ('(sub\s+vcl_backend_(error|response)\s(((?!sub ).)*$))',
             'return\s*\(?restart\)?[^;]', 'return (retry)'),
