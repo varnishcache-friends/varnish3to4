@@ -37,7 +37,7 @@ def fixup(config):
            '\g<1># This is now handled in vcl_recv.\n'
            '\g<1>#\n'
            '\g<1># \g<2>'),
-        ('(error\s+(\d+)\s+("[^"]*"))',
+        ('(error\s+(\d+)\s+("[^"]*"|[^;]*))',
             'return (synth(\g<2>, \g<3>))'),
         ('(error\s+(\d+))', 'return (synth(\g<2>))'),
         ('(((bereq|req)\.\w+)\.healthy)', 'std.healthy(\g<2>)'),
