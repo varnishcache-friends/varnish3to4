@@ -1,6 +1,8 @@
 varnish3to4
 ===========
 
+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/fgsch/varnish3to4?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Unofficial script to assist migrating a VCL file from Varnish 3 to 4.
 
 ### Suggested usage
