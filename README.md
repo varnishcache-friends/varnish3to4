@@ -3,7 +3,7 @@ varnish3to4
 
 [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/fgsch/varnish3to4?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Unofficial script to assist migrating a VCL file from Varnish 3 to 4.
+Script to assist migrating a VCL file from Varnish 3 to 4.
 
 ### Suggested usage
 
@@ -19,7 +19,6 @@ V3 | V4
 vcl_fetch | vcl_backend_response
 vcl_error | vcl_backend_error and vcl_synth
 error code response | return (synth(code, response))
-purge | -
 remove | unset
 {bereq,req}.request | {bereq,req}.method
 {beresp,obj,resp}.response | {beresp,obj,resp}.reason
@@ -39,12 +38,18 @@ obj.* in vcl_synth | resp.*
 obj.hits - writing to | -
 obj.lastuse | -
 
+### Limited coverage
+
+V3 | V4
+:-- | :--
+purge | -
+
 ### Might be implemented
 
 V3 | V4
 :-- | :--
 - | vcl 4.0
-- | import directors<br/>new xx = directors.yy();<br/>xx.add_backend(ss);<br/>set req.backend_hint = xx.backend()
+- | import directors<br/>new xx = directors.yy();<br/>xx.add_backend(ss);<br/>set req.backend_hint = xx.backend();
 
-Add imports resulting from changes in V4, purge handling and any other
-changes missing from this document.
+Add imports resulting from changes in V4, complete purge handling and
+any other changes missing from this document.
