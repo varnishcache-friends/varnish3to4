@@ -62,13 +62,13 @@ def fixup(config):
         config = re.sub(v3, v4, config)
     return config
 
-def fixup_multi(config):
+def fixup_multi(config, include_41):
     def repl(v):
         def func(m):
             s = m.group()
             return (s, '# ' + s)[v in s]
         return func
-    v3v4 = (
+    v3v4 = [
         ('(set\s+[^;]*;)', '^(.*)$', repl('obj.lastuse')),
         ('(sub\s+vcl_recv\s(((?!sub ).)*$))',
             'return\s*\(?lookup\)?[^;]', 'return (hash)'),
@@ -98,7 +98,12 @@ def fixup_multi(config):
             '(req\.backend(?!_))', 'req.backend_hint'),
         ('(sub\s+vcl_backend_(error|response)\s(((?!sub ).)*$))',
             'return\s*\(?restart\)?[^;]', 'return (retry)'),
-    )
+    ]
+    if include_41:
+        v3v4.append(
+            ('(sub\s+vcl_hit\s(((?!sub ).)*$))',
+                 'return\s*\(?fetch\)?[^;]', 'return (miss)')
+        )
     for s, v3, v4 in v3v4:
         for m in re.finditer(s, config, re.S | re.M):
             config = config.replace(m.group(1), re.sub(v3, v4, m.group(1)))
@@ -108,12 +113,16 @@ def main():
     parser = argparse.ArgumentParser(prog='varnish3to4')
     parser.add_argument('config', type=argparse.FileType('r'),
                         help='Varnish 3 VCL file')
+    parser.add_argument('--41', action='store_true',
+                        help='Include changes for 4.1 (unreleased)')
     parser.add_argument('-o', '--output', type=argparse.FileType('w'),
                         default='-')
     args = parser.parse_args()
 
+    include_41 = getattr(args, '41')
+
     config = fixup(args.config.read())
-    config = fixup_multi(config)
+    config = fixup_multi(config, include_41)
     args.output.write(config)
 
 if __name__ == '__main__':
