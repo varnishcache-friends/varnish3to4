@@ -29,23 +29,24 @@
 import argparse
 import re
 
+
 def fixup(config):
     v3v4 = (
         ('(vcl_fetch)', 'vcl_backend_response'),
         ('([ \t]*)(purge\s*;)',
-           '\g<1>#\n'
-           '\g<1># This is now handled in vcl_recv.\n'
-           '\g<1>#\n'
-           '\g<1># \g<2>'),
+            '\g<1>#\n'
+            '\g<1># This is now handled in vcl_recv.\n'
+            '\g<1>#\n'
+            '\g<1># \g<2>'),
         ('(error\s+(\d+)\s+("[^"]*"|[^;]*))',
             'return (synth(\g<2>, \g<3>))'),
         ('(error\s+(\d+))', 'return (synth(\g<2>))'),
         ('(((bereq|req)\.\w+)\.healthy)', 'std.healthy(\g<2>)'),
         ('([ \t]*)(set\s+req\.grace[^;]*;)',
-           '\g<1>#\n'
-           '\g<1># This is now handled in vcl_hit.\n'
-           '\g<1>#\n'
-           '\g<1># \g<2>'),
+            '\g<1>#\n'
+            '\g<1># This is now handled in vcl_hit.\n'
+            '\g<1>#\n'
+            '\g<1># \g<2>'),
         ('((bereq|req)\.(request))', '\g<2>.method'),
         ('((beresp|obj|resp)\.(response))', '\g<2>.reason'),
         ('(beresp\.storage(?!_))', 'beresp.storage_hint'),
@@ -61,6 +62,7 @@ def fixup(config):
     for v3, v4 in v3v4:
         config = re.sub(v3, v4, config)
     return config
+
 
 def fixup_multi(config, include_41):
     def repl(v):
@@ -102,12 +104,13 @@ def fixup_multi(config, include_41):
     if include_41:
         v3v4.append(
             ('(sub\s+vcl_hit\s(((?!sub ).)*$))',
-                 'return\s*\(?fetch\)?[^;]', 'return (miss)')
+             'return\s*\(?fetch\)?[^;]', 'return (miss)')
         )
     for s, v3, v4 in v3v4:
         for m in re.finditer(s, config, re.S | re.M):
             config = config.replace(m.group(1), re.sub(v3, v4, m.group(1)))
     return config
+
 
 def main():
     parser = argparse.ArgumentParser(prog='varnish3to4')
