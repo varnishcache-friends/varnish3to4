@@ -12,7 +12,7 @@ Script to assist migrating a VCL file from Varnish 3 to 4.
  $ diff -u <filename> <filename>.v4
 ```
 
-To include changes for Varnish 4.1 [1]:
+To include changes for Varnish 4.1:
 
 ```
  $ varnish3to4 --41 -o <filename>.v4 <filename>
@@ -40,7 +40,7 @@ return (lookup) in vcl_recv | return (hash)
 return (hash) in vcl_hash | return (lookup)
 return (pass) in vcl_pass | return (fetch)
 return (restart) in vcl_fetch | return (retry)
-return (fetch) in vcl_hit [1][2] | return (miss)
+return (fetch) in vcl_hit [1] | return (miss)
 synthetic .. | synthetic(..)
 obj.* in vcl_synth | resp.*
 obj.hits - writing to | -
@@ -62,5 +62,4 @@ V3 | V4
 Add imports resulting from changes in V4, complete purge handling and
 any other changes missing from this document.
 
-1. Varnish 4.1 is not released yet. At the moment this refers to master.
-2. This change is optional in 4.1 but might be mandatory in future versions.
+1. This change is optional in 4.1 but might be mandatory in future versions.

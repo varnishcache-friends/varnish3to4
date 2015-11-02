@@ -117,7 +117,7 @@ def main():
     parser.add_argument('config', type=argparse.FileType('r'),
                         help='Varnish 3 VCL file')
     parser.add_argument('--41', action='store_true',
-                        help='Include changes for 4.1 (unreleased)')
+                        help='Include changes for 4.1')
     parser.add_argument('-o', '--output', type=argparse.FileType('w'),
                         default='-')
     args = parser.parse_args()
