@@ -45,9 +45,9 @@ synthetic .. | synthetic(..)
 obj.* in vcl_synth | resp.*
 obj.hits - writing to | -
 obj.lastuse | -
-std.real2integer(r) [1] | std.real2integer(r, i)
-std.time2integer(t) [1] | std.time2integer(t, i)
-std.time2real(t) [1] | std.time2real(t, r)
+std.real2integer(real) [1] | std.real2integer(real, integer)
+std.time2integer(time) [1] | std.time2integer(time, integer)
+std.time2real(time) [1] | std.time2real(time, real)
 
 ### Limited coverage
 
@@ -65,5 +65,5 @@ V3 | V4
 Add imports resulting from changes in V4, complete purge handling and
 any other changes missing from this document.
 
-2. Varnish 4.1 specific.
-1. This change is optional but might be mandatory in future versions.
+1. Varnish 4.1 specific.
+2. This change is optional but might be mandatory in future versions.
