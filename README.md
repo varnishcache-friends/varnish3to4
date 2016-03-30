@@ -3,7 +3,7 @@ varnish3to4
 
 [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/fgsch/varnish3to4?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Script to assist migrating a VCL file from Varnish 3 to 4.
+Script to assist migrating a VCL file from Varnish 3 to 4.x.
 
 ### Suggested usage
 
@@ -40,11 +40,14 @@ return (lookup) in vcl_recv | return (hash)
 return (hash) in vcl_hash | return (lookup)
 return (pass) in vcl_pass | return (fetch)
 return (restart) in vcl_fetch | return (retry)
-return (fetch) in vcl_hit [1] | return (miss)
+return (fetch) in vcl_hit [1][2] | return (miss)
 synthetic .. | synthetic(..)
 obj.* in vcl_synth | resp.*
 obj.hits - writing to | -
 obj.lastuse | -
+std.real2integer(r) [1] | std.real2integer(r, i)
+std.time2integer(t) [1] | std.time2integer(t, i)
+std.time2real(t) [1] | std.time2real(t, r)
 
 ### Limited coverage
 
@@ -62,4 +65,5 @@ V3 | V4
 Add imports resulting from changes in V4, complete purge handling and
 any other changes missing from this document.
 
-1. This change is optional in 4.1 but might be mandatory in future versions.
+2. Varnish 4.1 specific.
+1. This change is optional but might be mandatory in future versions.
