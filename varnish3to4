@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Copyright (c) 2014-2015, Federico G. Schwindt <fgsch@lodoss.net>
+# Copyright (c) 2014-2016, Federico G. Schwindt <fgsch@lodoss.net>
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -30,8 +30,8 @@ import argparse
 import re
 
 
-def fixup(config):
-    v3v4 = (
+def fixup(config, include_41):
+    v3v4 = [
         ('(vcl_fetch)', 'vcl_backend_response'),
         ('([ \t]*)(purge\s*;)',
             '\g<1>#\n'
@@ -58,7 +58,14 @@ def fixup(config):
             '\g<2>return (deliver);'),
         ('((client|server)\.port)', 'std.port(\g<2>.ip)'),
         ('(set\s+obj\.hits[^;]*;)', '# \g<1>'),
-    )
+    ]
+    if include_41:
+        v3v4.extend((
+            ('(std.(?:real|time)2integer)\(([^\)]*)\)',
+                '\g<1>(\g<2>, 0)'),
+            ('(std.time2real)\s*\(([^\)]*)\)',
+                '\g<1>(\g<2>, 0.0)'),
+        ))
     for v3, v4 in v3v4:
         config = re.sub(v3, v4, config)
     return config
@@ -124,7 +131,7 @@ def main():
 
     include_41 = getattr(args, '41')
 
-    config = fixup(args.config.read())
+    config = fixup(args.config.read(), include_41)
     config = fixup_multi(config, include_41)
     args.output.write(config)
 
