@@ -23,31 +23,31 @@ To include changes for Varnish 4.1:
 
 V3 | V4
 :-- | :--
-vcl_fetch | vcl_backend_response
-vcl_error | vcl_backend_error and vcl_synth
-error code response | return (synth(code, response))
-remove | unset
+{bereq,req}.backend.healthy | std.healthy({bereq.backend,req.backend_hint})
 {bereq,req}.request | {bereq,req}.method
 {beresp,obj,resp}.response | {beresp,obj,resp}.reason
-{bereq,req}.backend.healthy | std.healthy({bereq.backend,req.backend_hint})
 beresp.storage | beresp.storage_hint
+{client,server}.port | std.port({client,server}.ip)
+error code response | return (synth(code, response))
+obj.hits - writing to | -
+obj.* in vcl_synth | resp.*
+obj.lastuse | -
+remove | unset
 req.backend | req.backend_hint
 req.grace | -
 req.* in vcl_backend_response | bereq.*
-{client,server}.port | std.port({client,server}.ip)
+return (fetch) in vcl_hit [1][2] | return (miss)
+return (hash) in vcl_hash | return (lookup)
 return (hit_for_pass) | set beresp.uncacheable = true;<br/>return (deliver);
 return (lookup) in vcl_recv | return (hash)
-return (hash) in vcl_hash | return (lookup)
 return (pass) in vcl_pass | return (fetch)
 return (restart) in vcl_fetch | return (retry)
-return (fetch) in vcl_hit [1][2] | return (miss)
+std.real2integer(..) [1] | std.real2integer(.., n)
+std.time2integer(..) [1] | std.time2integer(.., n)
+std.time2real(..) [1] | std.time2real(.., n.n)
 synthetic .. | synthetic(..)
-obj.* in vcl_synth | resp.*
-obj.hits - writing to | -
-obj.lastuse | -
-std.real2integer(real) [1] | std.real2integer(real, integer)
-std.time2integer(time) [1] | std.time2integer(time, integer)
-std.time2real(time) [1] | std.time2real(time, real)
+vcl_error | vcl_backend_error and vcl_synth
+vcl_fetch | vcl_backend_response
 
 ### Limited coverage
 
@@ -55,7 +55,7 @@ V3 | V4
 :-- | :--
 purge | -
 
-### Might be implemented
+### Won't be implemented
 
 V3 | V4
 :-- | :--
