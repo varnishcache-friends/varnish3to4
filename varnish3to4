@@ -105,6 +105,8 @@ def fixup_multi(config, include_41):
             '(bereq\.restarts)', 'bereq.retries'),
         ('(sub\s+vcl_(hit|miss|pass|pipe|recv|synth)\s(((?!sub ).)*$))',
             '(req\.backend(?!_))', 'req.backend_hint'),
+        ('(sub\s+vcl_(miss|pass)\s(((?!sub ).)*$))',
+            '(bereq\.(\w+))', 'req.\g<2>'),
         ('(sub\s+vcl_backend_(error|response)\s(((?!sub ).)*$))',
             'return\s*\(?restart\)?[^;]', 'return (retry)'),
     ]
