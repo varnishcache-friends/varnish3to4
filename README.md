@@ -25,6 +25,7 @@ V3 | V4
 :-- | :--
 {bereq,req}.backend.healthy | std.healthy({bereq.backend,req.backend_hint})
 {bereq,req}.request | {bereq,req}.method
+bereq.* in vcl_pass and vcl_miss | req.*
 {beresp,obj,resp}.response | {beresp,obj,resp}.reason
 beresp.storage | beresp.storage_hint
 {client,server}.port | std.port({client,server}.ip)
