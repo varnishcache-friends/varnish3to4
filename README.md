@@ -37,6 +37,7 @@ remove | unset
 req.backend | req.backend_hint
 req.grace | -
 req.* in vcl_backend_response | bereq.*
+bereq.* in vcl_pass and vcl_miss | req.*
 return (fetch) in vcl_hit [1][2] | return (miss)
 return (hash) in vcl_hash | return (lookup)
 return (hit_for_pass) | set beresp.uncacheable = true;<br/>return (deliver);
