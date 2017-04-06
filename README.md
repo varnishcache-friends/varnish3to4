@@ -50,6 +50,9 @@ synthetic .. | synthetic(..)
 vcl_error | vcl_backend_error and vcl_synth
 vcl_fetch | vcl_backend_response
 
+1. Varnish 4.1 and above.
+2. This change is optional in 4.1 but mandatory starting with 5.0.
+
 ### Limited coverage
 
 V3 | V4
@@ -66,5 +69,5 @@ V3 | V4
 Add imports resulting from changes in V4, complete purge handling and
 any other changes missing from this document.
 
-1. Varnish 4.1 and above.
-2. This change is optional in 4.1 but mandatory starting with 5.0.
+VCL comments are threated as code, so that anything the script finds
+in them, will be migrated.
