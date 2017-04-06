@@ -3,7 +3,7 @@ varnish3to4
 
 [![Join the chat at https://gitter.im/fgsch/varnish3to4](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/fgsch/varnish3to4?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Script to assist migrating a VCL file from Varnish 3 to 4.x.
+Script to assist migrating a VCL file from Varnish 3 to 4.x. [1]
 
 ### Suggested usage
 
@@ -37,15 +37,15 @@ remove | unset
 req.backend | req.backend_hint
 req.grace | -
 req.* in vcl_backend_response | bereq.*
-return (fetch) in vcl_hit [1][2] | return (miss)
+return (fetch) in vcl_hit [2][3] | return (miss)
 return (hash) in vcl_hash | return (lookup)
 return (hit_for_pass) | set beresp.uncacheable = true;<br/>return (deliver);
 return (lookup) in vcl_recv | return (hash)
 return (pass) in vcl_pass | return (fetch)
 return (restart) in vcl_fetch | return (retry)
-std.real2integer(..) [1] | std.real2integer(.., n)
-std.time2integer(..) [1] | std.time2integer(.., n)
-std.time2real(..) [1] | std.time2real(.., n.n)
+std.real2integer(..) [2] | std.real2integer(.., n)
+std.time2integer(..) [2] | std.time2integer(.., n)
+std.time2real(..) [2] | std.time2real(.., n.n)
 synthetic .. | synthetic(..)
 vcl_error | vcl_backend_error and vcl_synth
 vcl_fetch | vcl_backend_response
@@ -68,5 +68,7 @@ any other changes missing from this document.
 
 ### Notes
 
-1. Varnish 4.1 and above.
-2. This change is optional in 4.1 but mandatory starting with 5.0.
+1. Comments in VCL are treated as code and as such references within
+   will be rewritten.
+2. Varnish 4.1 and above.
+3. This change is optional in 4.1 but mandatory starting with 5.0.
