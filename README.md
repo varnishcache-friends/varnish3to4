@@ -66,5 +66,7 @@ V3 | V4
 Add imports resulting from changes in V4, complete purge handling and
 any other changes missing from this document.
 
+### Notes
+
 1. Varnish 4.1 and above.
 2. This change is optional in 4.1 but mandatory starting with 5.0.
