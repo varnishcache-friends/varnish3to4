@@ -60,8 +60,8 @@ purge | -
 
 V3 | V4
 :-- | :--
-- | vcl 4.0
-- | import directors<br/>new xx = directors.yy();<br/>xx.add_backend(ss);<br/>set req.backend_hint = xx.backend();
+&nbsp;- | vcl 4.0
+&nbsp;- | import directors<br/>new xx = directors.yy();<br/>xx.add_backend(ss);<br/>set req.backend_hint = xx.backend();
 
 Add imports resulting from changes in V4, complete purge handling and
 any other changes missing from this document.
