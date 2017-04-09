@@ -12,10 +12,10 @@ Script to assist migrating a VCL file from Varnish 3 to 4.x. [1]
  $ diff -u <filename> <filename>.v4
 ```
 
-To include changes for Varnish 4.1:
+To limit changes for Varnish 4.0:
 
 ```
- $ varnish3to4 --41 -o <filename>.v4 <filename>
+ $ varnish3to4 -v 4.0 -o <filename>.v4 <filename>
  $ diff -u <filename> <filename>.v4
 ```
 
@@ -70,5 +70,5 @@ any other changes missing from this document.
 
 1. Comments in VCL are treated as code and as such references within
    will be rewritten.
-2. Varnish 4.1 and above.
-3. This change is optional in 4.1 but mandatory starting with 5.0.
+2. Required in 4.1 and above.
+3. Optional in 4.1. Required in 5.0 and above.
