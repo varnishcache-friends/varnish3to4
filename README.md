@@ -37,7 +37,6 @@ remove | unset
 req.backend | req.backend_hint
 req.grace | -
 req.* in vcl_backend_response | bereq.*
-return (fetch) in vcl_hit [2][3] | return (miss)
 return (hash) in vcl_hash | return (lookup)
 return (hit_for_pass) | set beresp.uncacheable = true;<br/>return (deliver);
 return (lookup) in vcl_recv | return (hash)
@@ -65,6 +64,10 @@ V3 | V4
 
 Add imports resulting from changes in V4, complete purge handling and
 any other changes missing from this document.
+
+### N/A for 3.0 (for documentation only)
+
+return (fetch) in vcl_hit [2][3] | return (miss)
 
 ### Notes
 
