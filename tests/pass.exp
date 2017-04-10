@@ -1,0 +1,4 @@
+sub vcl_pass {
+	set req.backend_hint = default;
+	return (fetch);
+}

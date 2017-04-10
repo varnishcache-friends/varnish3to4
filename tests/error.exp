@@ -1,0 +1,5 @@
+return (synth(404));
+return (synth(404, "Not Found"));
+return (synth(751, "http://" + req.http.host));
+return (synth(751, "http://" + req.http.host + "/"));
+return (synth(751, "http://" + req.http.host + req.url));

@@ -1,0 +1,4 @@
+sub vcl_pass {
+	set bereq.backend = default;
+	return (pass);
+}
