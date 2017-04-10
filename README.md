@@ -67,7 +67,9 @@ any other changes missing from this document.
 
 ### N/A for 3.0 (for documentation only)
 
-return (fetch) in vcl_hit [2][3] | return (miss)
+V4.0 | V4.1
+:---- | :----
+return (fetch) in vcl_hit [3] | return (miss)
 
 ### Notes
 
