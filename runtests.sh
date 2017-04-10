@@ -2,9 +2,10 @@
 
 status=0
 for test in $(echo tests/*.test); do
-	output=${test/.test/.out}
+	output=$(echo $test | sed 's/\.test/\.out/')
+	expect=$(echo $test | sed 's/\.test/\.exp/')
 	python varnish3to4 $test -o $output
-	cmp -s $output ${test/.test/.exp}
+	cmp -s $output $expect
 	retval=$?
 	[ $retval -ne 0 ] && status=$retval
 done
