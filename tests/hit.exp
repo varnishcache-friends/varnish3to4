@@ -1,0 +1,11 @@
+sub vcl_hit {
+	if (req.method == "PURGE") {
+		#
+		# This is now handled in vcl_recv.
+		#
+		# purge;
+		return (synth(200, "Purged."));
+	}
+	set req.backend_hint = b1;
+	return (restart);
+}

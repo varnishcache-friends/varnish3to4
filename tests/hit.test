@@ -1,0 +1,8 @@
+sub vcl_hit {
+	if (req.request == "PURGE") {
+		purge;
+		error 200 "Purged.";
+	}
+	set req.backend = b1;
+	return (restart);
+}
